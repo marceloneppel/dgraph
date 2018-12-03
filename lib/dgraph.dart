@@ -1,0 +1,111 @@
+import 'package:protobuf/protobuf.dart';
+import 'protos/api/api_pb.dart' as api;
+import 'txn.dart';
+import 'dart:async';
+import 'dart:math';
+
+// Dgraph is a transaction aware client to a set of dgraph server instances.
+class Dgraph {
+  List<api.DgraphApi> dc;
+
+  // NewTxn creates a new transaction.
+  Txn NewTxn() {
+    return Txn(
+      dg: this,
+      dc: anyClient(),
+      context: api.TxnContext(),
+    );
+  }
+
+  Txn NewReadOnlyTxn() {
+    Txn txn = NewTxn();
+    txn.readOnly = true;
+    return txn;
+  }
+
+  Dgraph({this.dc});
+
+  // By setting various fields of api.Operation, Alter can be used to do the
+  // following:
+  //
+  // 1. Modify the schema.
+  //
+  // 2. Drop a predicate.
+  //
+  // 3. Drop the database.
+  Future<Null> Alter(ClientContext ctx, api.Operation op) async {
+    api.DgraphApi dc = anyClient();
+    await dc.alter(ctx, op);
+  }
+
+  api.DgraphApi anyClient() {
+    return dc[Random().nextInt(dc.length)];
+  }
+
+  // DeleteEdges sets the edges corresponding to predicates on the node with the given uid
+  // for deletion.
+  // This helper function doesn't run the mutation on the server. It must be done by the user
+  // after the function returns.
+  dynamic get DeleteEdges => DeleteEdges;
+}
+
+_wrapper dgraph = _wrapper();
+
+class DeleteEdges {
+  void call(api.Mutation mu, String uid, String predicate) {
+    api.NQuad nQuad = api.NQuad();
+    nQuad.subject = uid;
+    nQuad.predicate = predicate;
+    api.Value value = api.Value();
+    // _STAR_ALL is defined as x.Star in x package.
+    value.defaultVal = "_STAR_ALL";
+    nQuad.objectValue = value;
+    mu.del.add(nQuad);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    List args = invocation.positionalArguments;
+    if (args.length < 3) {
+      super.noSuchMethod(invocation);
+    }
+    api.Mutation mu = args[0];
+    String uid = args[1];
+    List<String> predicates = args.sublist(2, args.length - 1);
+    predicates.forEach((predicate) {
+      api.NQuad nQuad = api.NQuad();
+      nQuad.subject = uid;
+      nQuad.predicate = predicate;
+      api.Value value = api.Value();
+      // _STAR_ALL is defined as x.Star in x package.
+      value.defaultVal = "_STAR_ALL";
+      nQuad.objectValue = value;
+      mu.del.add(nQuad);
+    });
+  }
+}
+
+// NewDgraphClient creates a new Dgraph for interacting with the Dgraph store connected to in
+// conns.
+// The client can be backed by multiple connections (to the same server, or multiple servers in a
+// cluster).
+//
+// TODO: check "A single client is thread safe for sharing with multiple dart isolates."
+class NewDgraphClientFunction {
+  Dgraph call(api.DgraphApi client) {
+    return Dgraph(
+      dc: [client],
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    return Dgraph(
+      dc: invocation.positionalArguments,
+    );
+  }
+}
+
+class _wrapper {
+  dynamic get NewDgraphClient => NewDgraphClientFunction();
+}

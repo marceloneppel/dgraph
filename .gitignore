@@ -1,0 +1,5 @@
+.dart_tool/
+.packages
+.vscode/
+pubspec.lock
+lib/protos/api.proto
