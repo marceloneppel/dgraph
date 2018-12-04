@@ -8,9 +8,23 @@ const Request$json = const {
   '1': 'Request',
   '2': const [
     const {'1': 'query', '3': 1, '4': 1, '5': 9, '10': 'query'},
-    const {'1': 'vars', '3': 2, '4': 3, '5': 11, '6': '.api.Request.VarsEntry', '10': 'vars'},
+    const {
+      '1': 'vars',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.api.Request.VarsEntry',
+      '10': 'vars'
+    },
     const {'1': 'start_ts', '3': 13, '4': 1, '5': 4, '10': 'startTs'},
-    const {'1': 'lin_read', '3': 14, '4': 1, '5': 11, '6': '.api.LinRead', '10': 'linRead'},
+    const {
+      '1': 'lin_read',
+      '3': 14,
+      '4': 1,
+      '5': 11,
+      '6': '.api.LinRead',
+      '10': 'linRead'
+    },
     const {'1': 'read_only', '3': 15, '4': 1, '5': 8, '10': 'readOnly'},
   ],
   '3': const [Request_VarsEntry$json],
@@ -29,18 +43,60 @@ const Response$json = const {
   '1': 'Response',
   '2': const [
     const {'1': 'json', '3': 1, '4': 1, '5': 12, '10': 'json'},
-    const {'1': 'schema', '3': 2, '4': 3, '5': 11, '6': '.api.SchemaNode', '10': 'schema'},
-    const {'1': 'txn', '3': 3, '4': 1, '5': 11, '6': '.api.TxnContext', '10': 'txn'},
-    const {'1': 'latency', '3': 12, '4': 1, '5': 11, '6': '.api.Latency', '10': 'latency'},
+    const {
+      '1': 'schema',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.api.SchemaNode',
+      '10': 'schema'
+    },
+    const {
+      '1': 'txn',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.api.TxnContext',
+      '10': 'txn'
+    },
+    const {
+      '1': 'latency',
+      '3': 12,
+      '4': 1,
+      '5': 11,
+      '6': '.api.Latency',
+      '10': 'latency'
+    },
   ],
 };
 
 const Assigned$json = const {
   '1': 'Assigned',
   '2': const [
-    const {'1': 'uids', '3': 1, '4': 3, '5': 11, '6': '.api.Assigned.UidsEntry', '10': 'uids'},
-    const {'1': 'context', '3': 2, '4': 1, '5': 11, '6': '.api.TxnContext', '10': 'context'},
-    const {'1': 'latency', '3': 12, '4': 1, '5': 11, '6': '.api.Latency', '10': 'latency'},
+    const {
+      '1': 'uids',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.api.Assigned.UidsEntry',
+      '10': 'uids'
+    },
+    const {
+      '1': 'context',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.api.TxnContext',
+      '10': 'context'
+    },
+    const {
+      '1': 'latency',
+      '3': 12,
+      '4': 1,
+      '5': 11,
+      '6': '.api.Latency',
+      '10': 'latency'
+    },
   ],
   '3': const [Assigned_UidsEntry$json],
 };
@@ -61,11 +117,31 @@ const Mutation$json = const {
     const {'1': 'delete_json', '3': 2, '4': 1, '5': 12, '10': 'deleteJson'},
     const {'1': 'set_nquads', '3': 3, '4': 1, '5': 12, '10': 'setNquads'},
     const {'1': 'del_nquads', '3': 4, '4': 1, '5': 12, '10': 'delNquads'},
-    const {'1': 'set', '3': 10, '4': 3, '5': 11, '6': '.api.NQuad', '10': 'set'},
-    const {'1': 'del', '3': 11, '4': 3, '5': 11, '6': '.api.NQuad', '10': 'del'},
+    const {
+      '1': 'set',
+      '3': 10,
+      '4': 3,
+      '5': 11,
+      '6': '.api.NQuad',
+      '10': 'set'
+    },
+    const {
+      '1': 'del',
+      '3': 11,
+      '4': 3,
+      '5': 11,
+      '6': '.api.NQuad',
+      '10': 'del'
+    },
     const {'1': 'start_ts', '3': 13, '4': 1, '5': 4, '10': 'startTs'},
     const {'1': 'commit_now', '3': 14, '4': 1, '5': 8, '10': 'commitNow'},
-    const {'1': 'ignore_index_conflict', '3': 15, '4': 1, '5': 8, '10': 'ignoreIndexConflict'},
+    const {
+      '1': 'ignore_index_conflict',
+      '3': 15,
+      '4': 1,
+      '5': 8,
+      '10': 'ignoreIndexConflict'
+    },
   ],
 };
 
@@ -93,7 +169,14 @@ const TxnContext$json = const {
     const {'1': 'aborted', '3': 3, '4': 1, '5': 8, '10': 'aborted'},
     const {'1': 'keys', '3': 4, '4': 3, '5': 9, '10': 'keys'},
     const {'1': 'preds', '3': 5, '4': 3, '5': 9, '10': 'preds'},
-    const {'1': 'lin_read', '3': 13, '4': 1, '5': 11, '6': '.api.LinRead', '10': 'linRead'},
+    const {
+      '1': 'lin_read',
+      '3': 13,
+      '4': 1,
+      '5': 11,
+      '6': '.api.LinRead',
+      '10': 'linRead'
+    },
   ],
 };
 
@@ -111,8 +194,22 @@ const Version$json = const {
 const LinRead$json = const {
   '1': 'LinRead',
   '2': const [
-    const {'1': 'ids', '3': 1, '4': 3, '5': 11, '6': '.api.LinRead.IdsEntry', '10': 'ids'},
-    const {'1': 'sequencing', '3': 2, '4': 1, '5': 14, '6': '.api.LinRead.Sequencing', '10': 'sequencing'},
+    const {
+      '1': 'ids',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.api.LinRead.IdsEntry',
+      '10': 'ids'
+    },
+    const {
+      '1': 'sequencing',
+      '3': 2,
+      '4': 1,
+      '5': 14,
+      '6': '.api.LinRead.Sequencing',
+      '10': 'sequencing'
+    },
   ],
   '3': const [LinRead_IdsEntry$json],
   '4': const [LinRead_Sequencing$json],
@@ -150,26 +247,68 @@ const NQuad$json = const {
     const {'1': 'subject', '3': 1, '4': 1, '5': 9, '10': 'subject'},
     const {'1': 'predicate', '3': 2, '4': 1, '5': 9, '10': 'predicate'},
     const {'1': 'object_id', '3': 3, '4': 1, '5': 9, '10': 'objectId'},
-    const {'1': 'object_value', '3': 4, '4': 1, '5': 11, '6': '.api.Value', '10': 'objectValue'},
+    const {
+      '1': 'object_value',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.api.Value',
+      '10': 'objectValue'
+    },
     const {'1': 'label', '3': 5, '4': 1, '5': 9, '10': 'label'},
     const {'1': 'lang', '3': 6, '4': 1, '5': 9, '10': 'lang'},
-    const {'1': 'facets', '3': 7, '4': 3, '5': 11, '6': '.api.Facet', '10': 'facets'},
+    const {
+      '1': 'facets',
+      '3': 7,
+      '4': 3,
+      '5': 11,
+      '6': '.api.Facet',
+      '10': 'facets'
+    },
   ],
 };
 
 const Value$json = const {
   '1': 'Value',
   '2': const [
-    const {'1': 'default_val', '3': 1, '4': 1, '5': 9, '9': 0, '10': 'defaultVal'},
+    const {
+      '1': 'default_val',
+      '3': 1,
+      '4': 1,
+      '5': 9,
+      '9': 0,
+      '10': 'defaultVal'
+    },
     const {'1': 'bytes_val', '3': 2, '4': 1, '5': 12, '9': 0, '10': 'bytesVal'},
     const {'1': 'int_val', '3': 3, '4': 1, '5': 3, '9': 0, '10': 'intVal'},
     const {'1': 'bool_val', '3': 4, '4': 1, '5': 8, '9': 0, '10': 'boolVal'},
     const {'1': 'str_val', '3': 5, '4': 1, '5': 9, '9': 0, '10': 'strVal'},
-    const {'1': 'double_val', '3': 6, '4': 1, '5': 1, '9': 0, '10': 'doubleVal'},
+    const {
+      '1': 'double_val',
+      '3': 6,
+      '4': 1,
+      '5': 1,
+      '9': 0,
+      '10': 'doubleVal'
+    },
     const {'1': 'geo_val', '3': 7, '4': 1, '5': 12, '9': 0, '10': 'geoVal'},
     const {'1': 'date_val', '3': 8, '4': 1, '5': 12, '9': 0, '10': 'dateVal'},
-    const {'1': 'datetime_val', '3': 9, '4': 1, '5': 12, '9': 0, '10': 'datetimeVal'},
-    const {'1': 'password_val', '3': 10, '4': 1, '5': 9, '9': 0, '10': 'passwordVal'},
+    const {
+      '1': 'datetime_val',
+      '3': 9,
+      '4': 1,
+      '5': 12,
+      '9': 0,
+      '10': 'datetimeVal'
+    },
+    const {
+      '1': 'password_val',
+      '3': 10,
+      '4': 1,
+      '5': 9,
+      '9': 0,
+      '10': 'passwordVal'
+    },
     const {'1': 'uid_val', '3': 11, '4': 1, '5': 4, '9': 0, '10': 'uidVal'},
   ],
   '8': const [
@@ -182,7 +321,14 @@ const Facet$json = const {
   '2': const [
     const {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
     const {'1': 'value', '3': 2, '4': 1, '5': 12, '10': 'value'},
-    const {'1': 'val_type', '3': 3, '4': 1, '5': 14, '6': '.api.Facet.ValType', '10': 'valType'},
+    const {
+      '1': 'val_type',
+      '3': 3,
+      '4': 1,
+      '5': 14,
+      '6': '.api.Facet.ValType',
+      '10': 'valType'
+    },
     const {'1': 'tokens', '3': 4, '4': 3, '5': 9, '10': 'tokens'},
     const {'1': 'alias', '3': 5, '4': 1, '5': 9, '10': 'alias'},
   ],
@@ -218,11 +364,36 @@ const SchemaNode$json = const {
 const Dgraph$json = const {
   '1': 'Dgraph',
   '2': const [
-    const {'1': 'Query', '2': '.api.Request', '3': '.api.Response', '4': const {}},
-    const {'1': 'Mutate', '2': '.api.Mutation', '3': '.api.Assigned', '4': const {}},
-    const {'1': 'Alter', '2': '.api.Operation', '3': '.api.Payload', '4': const {}},
-    const {'1': 'CommitOrAbort', '2': '.api.TxnContext', '3': '.api.TxnContext', '4': const {}},
-    const {'1': 'CheckVersion', '2': '.api.Check', '3': '.api.Version', '4': const {}},
+    const {
+      '1': 'Query',
+      '2': '.api.Request',
+      '3': '.api.Response',
+      '4': const {}
+    },
+    const {
+      '1': 'Mutate',
+      '2': '.api.Mutation',
+      '3': '.api.Assigned',
+      '4': const {}
+    },
+    const {
+      '1': 'Alter',
+      '2': '.api.Operation',
+      '3': '.api.Payload',
+      '4': const {}
+    },
+    const {
+      '1': 'CommitOrAbort',
+      '2': '.api.TxnContext',
+      '3': '.api.TxnContext',
+      '4': const {}
+    },
+    const {
+      '1': 'CheckVersion',
+      '2': '.api.Check',
+      '3': '.api.Version',
+      '4': const {}
+    },
   ],
 };
 
@@ -246,4 +417,3 @@ const Dgraph$messageJson = const {
   '.api.Check': Check$json,
   '.api.Version': Version$json,
 };
-

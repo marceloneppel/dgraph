@@ -20,15 +20,17 @@ import 'dart:async';
 class Txn {
   api.TxnContext context;
 
-	bool finished = false;
-	bool mutated = false;
-	bool readOnly = false;
+  bool finished = false;
+  bool mutated = false;
+  bool readOnly = false;
 
-	Dgraph dg;
-	api.DgraphApi dc;
+  Dgraph dg;
+  api.DgraphApi dc;
 
-  static const ErrFinished = "Transaction has already been committed or discarded";
-  static const ErrReadOnly = "Readonly transaction cannot run mutations or be committed";
+  static const ErrFinished =
+      "Transaction has already been committed or discarded";
+  static const ErrReadOnly =
+      "Readonly transaction cannot run mutations or be committed";
 
   Txn({this.dg, this.dc, this.context});
 
@@ -41,8 +43,8 @@ class Txn {
 
   // QueryWithVars is like Query, but allows a variable map to be used. This can
   // provide safety against injection attacks.
-  Future<api.Response> QueryWithVars(ClientContext ctx, String q,
-    Map<String,String> vars) async {
+  Future<api.Response> QueryWithVars(
+      ClientContext ctx, String q, Map<String, String> vars) async {
     if (finished) {
       throw ErrFinished;
     }
@@ -98,7 +100,7 @@ class Txn {
         finished = true;
       }
       mergeContext(ag.context);
-    } on GrpcError catch(e) {
+    } on GrpcError catch (e) {
       // Since a mutation error occurred, the txn should no longer be used
       // (some mutations could have applied but not others, but we don't know
       // which ones).  Discarding the transaction enforces that the user
@@ -140,8 +142,8 @@ class Txn {
           if (e.code == StatusCode.aborted) {
             throw ErrAborted;
           }
-        }        
-      } 
+        }
+      }
     }
   }
 
