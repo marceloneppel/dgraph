@@ -106,7 +106,7 @@ class Txn {
       // which ones).  Discarding the transaction enforces that the user
       // cannot use the txn further.
       try {
-        Discard(ctx);
+        await Discard(ctx);
       } catch (e) {
         // Ignore error - user should see the original error.
       }
@@ -128,7 +128,7 @@ class Txn {
   // returned if transactions that modify the same data are being run
   // concurrently. It's up to the user to decide if they wish to retry. In this
   // case, the user should create a new transaction.
-  void Commit(ClientContext ctx) {
+  Future<Null> Commit(ClientContext ctx) async {
     if (readOnly) {
       throw ErrReadOnly;
     } else if (finished) {
@@ -137,7 +137,7 @@ class Txn {
       finished = true;
       if (mutated) {
         try {
-          dc.commitOrAbort(ctx, context);
+          await dc.commitOrAbort(ctx, context);
         } on GrpcError catch (e) {
           if (e.code == StatusCode.aborted) {
             throw ErrAborted;
@@ -156,12 +156,12 @@ class Txn {
   // In some cases, the transaction can't be discarded, e.g. the grpc connection
   // is unavailable. In these cases, the server will eventually do the
   // transaction clean up.
-  void Discard(ClientContext ctx) {
+  Future<Null> Discard(ClientContext ctx) async {
     if (!finished) {
       finished = true;
       if (mutated) {
         context.aborted = true;
-        dc.commitOrAbort(ctx, context);
+        await dc.commitOrAbort(ctx, context);
       }
     }
   }
