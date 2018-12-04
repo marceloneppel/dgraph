@@ -801,8 +801,8 @@ class Facet extends $pb.GeneratedMessage {
       new $pb.BuilderInfo('Facet', package: const $pb.PackageName('api'))
         ..aOS(1, 'key')
         ..a<List<int>>(2, 'value', $pb.PbFieldType.OY)
-        ..e<FacetValType>(3, 'valType', $pb.PbFieldType.OE,
-            FacetValType.STRING, FacetValType.valueOf, FacetValType.values)
+        ..e<FacetValType>(3, 'valType', $pb.PbFieldType.OE, FacetValType.STRING,
+            FacetValType.valueOf, FacetValType.values)
         ..pPS(4, 'tokens')
         ..aOS(5, 'alias')
         ..hasRequiredFields = false;

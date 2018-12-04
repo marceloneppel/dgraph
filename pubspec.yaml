@@ -1,5 +1,5 @@
 name: dgraph
-version: 0.3.0
+version: 0.4.0
 description: Dgraph Dart client which communicates with the server using gRPC.
 author: Marcelo Henrique Neppel <marcelo.neppel@gmail.com>
 homepage: https://www.neppel.com.br

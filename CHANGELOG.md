@@ -1,3 +1,8 @@
+## 0.4.0
+
+* Improved README
+* Ran darfmt on dart file
+
 ## 0.3.0
 
 * Fixed 'Name types using UpperCamelCase' suggestion on package analysis
