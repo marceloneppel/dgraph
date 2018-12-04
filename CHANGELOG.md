@@ -1,3 +1,8 @@
+## 0.5.0
+
+* Changed Commit and Discard methods to async
+* Added dropAttr to example
+
 ## 0.4.0
 
 * Improved README

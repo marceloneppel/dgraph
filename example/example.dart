@@ -29,6 +29,7 @@ void main(List<String> arguments) async {
     Map<String, dynamic> p = {
       "uid": "_:alice",
       "name": "Alice",
+      "age": 18,
     };
     List<int> pb = utf8.encode(json.encode(p));
     api.Mutation mutation = api.Mutation();
@@ -41,6 +42,7 @@ void main(List<String> arguments) async {
     query all(\$a: string) {
       all(func: eq(name, \$a)) {
         name
+        age
       }
     }
     """;
@@ -50,7 +52,23 @@ void main(List<String> arguments) async {
         "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
 
     // Commit a transaction
-    txn.Commit(clientContext);
+    await txn.Commit(clientContext);
+
+    // Alter the database
+    operation = api.Operation();
+    operation.dropAttr = "age";
+    await dgraphClient.Alter(clientContext, operation);
+
+    // Create another transaction
+    txn = dgraphClient.NewTxn();
+
+    // Run the same query again
+    response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
+    print(
+        "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+
+    // Finish transaction without commit
+    await txn.Discard(clientContext);
 
     // Alter the database
     operation = api.Operation();
@@ -60,7 +78,7 @@ void main(List<String> arguments) async {
     print("Error: $e");
   } finally {
     if (txn != null) {
-      txn.Discard(clientContext);
+      await txn.Discard(clientContext);
     }
   }
 }
