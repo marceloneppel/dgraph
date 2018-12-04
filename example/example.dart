@@ -10,8 +10,7 @@ void main(List<String> arguments) async {
   // Create a client
   DgraphRpcClient rpcClient =
       DgraphRpcClient("localhost", 9080, const ChannelCredentials.insecure());
-  api.DgraphApi dgraphApi = api.DgraphApi(rpcClient);
-  Dgraph dgraphClient = dgraph.NewDgraphClient(dgraphApi);
+  Dgraph dgraphClient = dgraph.NewDgraphClient(api.DgraphApi(rpcClient));
 
   Txn txn;
   ClientContext clientContext = ClientContext();
@@ -52,6 +51,11 @@ void main(List<String> arguments) async {
 
     // Commit a transaction
     txn.Commit(clientContext);
+
+    // Alter the database
+    operation = api.Operation();
+    operation.dropAll = true;
+    await dgraphClient.Alter(clientContext, operation);
   } catch (e) {
     print("Error: $e");
   } finally {
