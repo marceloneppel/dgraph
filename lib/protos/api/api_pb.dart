@@ -498,13 +498,13 @@ class LinRead extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i =
       new $pb.BuilderInfo('LinRead', package: const $pb.PackageName('api'))
         ..m<int, Int64>(1, 'ids', $pb.PbFieldType.OU3, $pb.PbFieldType.OU6)
-        ..e<LinRead_Sequencing>(
+        ..e<LinReadSequencing>(
             2,
             'sequencing',
             $pb.PbFieldType.OE,
-            LinRead_Sequencing.CLIENT_SIDE,
-            LinRead_Sequencing.valueOf,
-            LinRead_Sequencing.values)
+            LinReadSequencing.CLIENT_SIDE,
+            LinReadSequencing.valueOf,
+            LinReadSequencing.values)
         ..hasRequiredFields = false;
 
   LinRead() : super();
@@ -528,8 +528,8 @@ class LinRead extends $pb.GeneratedMessage {
 
   Map<int, Int64> get ids => $_getMap(0);
 
-  LinRead_Sequencing get sequencing => $_getN(1);
-  set sequencing(LinRead_Sequencing v) {
+  LinReadSequencing get sequencing => $_getN(1);
+  set sequencing(LinReadSequencing v) {
     setField(2, v);
   }
 
@@ -801,8 +801,8 @@ class Facet extends $pb.GeneratedMessage {
       new $pb.BuilderInfo('Facet', package: const $pb.PackageName('api'))
         ..aOS(1, 'key')
         ..a<List<int>>(2, 'value', $pb.PbFieldType.OY)
-        ..e<Facet_ValType>(3, 'valType', $pb.PbFieldType.OE,
-            Facet_ValType.STRING, Facet_ValType.valueOf, Facet_ValType.values)
+        ..e<FacetValType>(3, 'valType', $pb.PbFieldType.OE,
+            FacetValType.STRING, FacetValType.valueOf, FacetValType.values)
         ..pPS(4, 'tokens')
         ..aOS(5, 'alias')
         ..hasRequiredFields = false;
@@ -842,8 +842,8 @@ class Facet extends $pb.GeneratedMessage {
   bool hasValue() => $_has(1);
   void clearValue() => clearField(2);
 
-  Facet_ValType get valType => $_getN(2);
-  set valType(Facet_ValType v) {
+  FacetValType get valType => $_getN(2);
+  set valType(FacetValType v) {
     setField(3, v);
   }
 

@@ -49,7 +49,7 @@ class Dgraph {
   dynamic get DeleteEdges => DeleteEdges;
 }
 
-_wrapper dgraph = _wrapper();
+_Wrapper dgraph = _Wrapper();
 
 class DeleteEdges {
   void call(api.Mutation mu, String uid, String predicate) {
@@ -106,6 +106,6 @@ class NewDgraphClientFunction {
   }
 }
 
-class _wrapper {
+class _Wrapper {
   dynamic get NewDgraphClient => NewDgraphClientFunction();
 }

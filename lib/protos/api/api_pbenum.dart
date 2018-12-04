@@ -8,35 +8,35 @@
 import 'dart:core' show int, dynamic, String, List, Map;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-class LinRead_Sequencing extends $pb.ProtobufEnum {
-  static const LinRead_Sequencing CLIENT_SIDE =
-      const LinRead_Sequencing._(0, 'CLIENT_SIDE');
-  static const LinRead_Sequencing SERVER_SIDE =
-      const LinRead_Sequencing._(1, 'SERVER_SIDE');
+class LinReadSequencing extends $pb.ProtobufEnum {
+  static const LinReadSequencing CLIENT_SIDE =
+      const LinReadSequencing._(0, 'CLIENT_SIDE');
+  static const LinReadSequencing SERVER_SIDE =
+      const LinReadSequencing._(1, 'SERVER_SIDE');
 
-  static const List<LinRead_Sequencing> values = const <LinRead_Sequencing>[
+  static const List<LinReadSequencing> values = const <LinReadSequencing>[
     CLIENT_SIDE,
     SERVER_SIDE,
   ];
 
-  static final Map<int, LinRead_Sequencing> _byValue =
+  static final Map<int, LinReadSequencing> _byValue =
       $pb.ProtobufEnum.initByValue(values);
-  static LinRead_Sequencing valueOf(int value) => _byValue[value];
-  static void $checkItem(LinRead_Sequencing v) {
-    if (v is! LinRead_Sequencing) $pb.checkItemFailed(v, 'LinRead_Sequencing');
+  static LinReadSequencing valueOf(int value) => _byValue[value];
+  static void $checkItem(LinReadSequencing v) {
+    if (v is! LinReadSequencing) $pb.checkItemFailed(v, 'LinRead_Sequencing');
   }
 
-  const LinRead_Sequencing._(int v, String n) : super(v, n);
+  const LinReadSequencing._(int v, String n) : super(v, n);
 }
 
-class Facet_ValType extends $pb.ProtobufEnum {
-  static const Facet_ValType STRING = const Facet_ValType._(0, 'STRING');
-  static const Facet_ValType INT = const Facet_ValType._(1, 'INT');
-  static const Facet_ValType FLOAT = const Facet_ValType._(2, 'FLOAT');
-  static const Facet_ValType BOOL = const Facet_ValType._(3, 'BOOL');
-  static const Facet_ValType DATETIME = const Facet_ValType._(4, 'DATETIME');
+class FacetValType extends $pb.ProtobufEnum {
+  static const FacetValType STRING = const FacetValType._(0, 'STRING');
+  static const FacetValType INT = const FacetValType._(1, 'INT');
+  static const FacetValType FLOAT = const FacetValType._(2, 'FLOAT');
+  static const FacetValType BOOL = const FacetValType._(3, 'BOOL');
+  static const FacetValType DATETIME = const FacetValType._(4, 'DATETIME');
 
-  static const List<Facet_ValType> values = const <Facet_ValType>[
+  static const List<FacetValType> values = const <FacetValType>[
     STRING,
     INT,
     FLOAT,
@@ -44,12 +44,12 @@ class Facet_ValType extends $pb.ProtobufEnum {
     DATETIME,
   ];
 
-  static final Map<int, Facet_ValType> _byValue =
+  static final Map<int, FacetValType> _byValue =
       $pb.ProtobufEnum.initByValue(values);
-  static Facet_ValType valueOf(int value) => _byValue[value];
-  static void $checkItem(Facet_ValType v) {
-    if (v is! Facet_ValType) $pb.checkItemFailed(v, 'Facet_ValType');
+  static FacetValType valueOf(int value) => _byValue[value];
+  static void $checkItem(FacetValType v) {
+    if (v is! FacetValType) $pb.checkItemFailed(v, 'Facet_ValType');
   }
 
-  const Facet_ValType._(int v, String n) : super(v, n);
+  const FacetValType._(int v, String n) : super(v, n);
 }
