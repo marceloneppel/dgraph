@@ -24,7 +24,7 @@ to understand how to run and work with Dgraph.
 
 ### Create a client
 
-`dgraphClient` object can be initialised by passing it a list of `rpcClient` clients as
+`dgraphClient` object can be initialised by passing it a list of `api.DgraphApi` clients as
 variadic arguments. Connecting to multiple Dgraph servers in the same cluster allows for better
 distribution of workload.
 
@@ -33,8 +33,7 @@ The following code snippet shows just one connection.
 ```dart
 DgraphRpcClient rpcClient =
     DgraphRpcClient("localhost", 9080, const ChannelCredentials.insecure());
-api.DgraphApi dgraphApi = api.DgraphApi(rpcClient);
-Dgraph dgraphClient = dgraph.NewDgraphClient(dgraphApi);
+Dgraph dgraphClient = dgraph.NewDgraphClient(api.DgraphApi(rpcClient));
 ```
 
 ### Alter the database
@@ -75,7 +74,7 @@ try {
 
 ### Run a mutation
 
-`txn.Mutate(clientContext, mu)` runs a mutation. It takes in a `ClientContext` and a `api.Mutation`
+`txn.Mutate(clientContext, mutation)` runs a mutation. It takes in a `ClientContext` and a `api.Mutation`
 object. You can set the data using JSON or RDF N-Quad format.
 
 We define a Map to represent a Person and convert an instance of it to use with `Mutation`
@@ -90,6 +89,7 @@ api.Mutation mutation = api.Mutation();
 mutation.setJson = pb;
 api.Assigned assigned = await txn.Mutate(clientContext, mutation);
 print("Assigned: $assigned");
+// uids: {alice : 0x1}
 ```
 
 Sometimes, you only want to commit a mutation, without querying anything further.
@@ -115,6 +115,7 @@ api.Response response =
     await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
 print(
     "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+// {"all":[{"name":"Alice"}]}
 ```
 
 ### Commit a transaction
