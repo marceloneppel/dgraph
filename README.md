@@ -1,5 +1,5 @@
 # dgraph
-Dgraph Dart client which communicates with the server using [gRPC](https://grpc.io/).
+[Dgraph](https://dgraph.io) Dart client which communicates with the server using [gRPC](https://grpc.io/).
 
 Before using this client, we highly recommend that you go through [tour.dgraph.io] and [docs.dgraph.io]
 to understand how to run and work with Dgraph.
@@ -58,7 +58,7 @@ related to a predicate.
 To create a transaction, call `dgraphClient.NewTxn()`, which returns a `Txn` object. This
 operation incurs no network overhead.
 
-It is a good practice to call `txn.Discard()` using a `defer` statement after it is initialized.
+It is a good practice to call `txn.Discard()` on a finally block after it is initialized.
 Calling `txn.Discard()` after `txn.Commit()` is a no-op and you can call `txn.Discard()` multiple
 times with no additional side-effects.
 
@@ -67,7 +67,9 @@ Txn txn;
 ClientContext clientContext = ClientContext();
 try {
   txn = dgraphClient.NewTxn();
-} finally (e) {
+  // Perform some queries and mutations.
+  // Commit the transaction.
+} finally {
   txn.Discard(clientContext);
 }
 ```
