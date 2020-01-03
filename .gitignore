@@ -2,5 +2,5 @@
 .packages
 .vscode/
 doc/
-lib/protos/api.proto
+lib/protos/api/api.proto
 pubspec.lock
