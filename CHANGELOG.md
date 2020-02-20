@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Dgraph 1.1.x support
+
 ## 0.5.0
 
 * Changed Commit and Discard methods to async

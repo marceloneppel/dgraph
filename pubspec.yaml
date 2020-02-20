@@ -1,13 +1,12 @@
 name: dgraph
-version: 0.5.0
+version: 1.1.0
 description: Dgraph Dart client which communicates with the server using gRPC.
 author: Marcelo Henrique Neppel <marcelo.neppel@gmail.com>
-homepage: https://www.neppel.com.br
-documentation: https://www.neppel.com.br
+homepage: https://github.com/marceloneppel/dgraph
 environment:
   sdk: '>=2.0.0 <3.0.0'
 dependencies:
   grpc: 0.6.6
-  protobuf: ^0.10.5
+  protobuf: '>=1.0.1 <2.0.0'
 dev_dependencies:
   test: ^1.5.1

@@ -1,5 +1,5 @@
 import 'package:protobuf/protobuf.dart';
-import 'protos/api/api_pb.dart' as api;
+import 'protos/api/api.pb.dart' as api;
 import 'txn.dart';
 import 'dart:async';
 import 'dart:math';

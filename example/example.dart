@@ -1,6 +1,6 @@
 import 'package:dgraph/api.dart';
 import 'package:dgraph/dgraph.dart';
-import 'package:dgraph/protos/api/api_pb.dart' as api;
+import 'package:dgraph/protos/api/api.pb.dart' as api;
 import 'package:dgraph/txn.dart';
 import 'package:grpc/grpc.dart';
 import 'package:protobuf/protobuf.dart';
@@ -34,8 +34,10 @@ void main(List<String> arguments) async {
     List<int> pb = utf8.encode(json.encode(p));
     api.Mutation mutation = api.Mutation();
     mutation.setJson = pb;
-    api.Assigned assigned = await txn.Mutate(clientContext, mutation);
-    print("Assigned: $assigned");
+    api.Request request = api.Request();
+    request.mutations.add(mutation);
+    api.Response response = await txn.Mutate(clientContext, request);
+    print("Response: $response");
 
     // Run a query
     String query = """
@@ -46,8 +48,7 @@ void main(List<String> arguments) async {
       }
     }
     """;
-    api.Response response =
-        await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
+    response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
     print(
         "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
 
