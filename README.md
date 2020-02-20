@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/marceloneppel/dgraph.svg?branch=master)](https://travis-ci.org/marceloneppel/dgraph)
+
 # dgraph
 [Dgraph](https://dgraph.io) Dart client which communicates with the server using [gRPC](https://grpc.io/).
 
