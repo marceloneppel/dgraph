@@ -19,6 +19,8 @@ to understand how to run and work with Dgraph.
     - [Run a mutation](#run-a-mutation)
     - [Run a query](#run-a-query)
     - [Commit a transaction](#commit-a-transaction)
+  - [Development](#development)
+    - [Running tests](#running-tests)
 
 ## Using a client
 
@@ -140,4 +142,15 @@ try {
 } catch (e) {
   // Retry or handle error
 }
+```
+
+## Development
+
+### Running tests
+
+Make sure you have `dgraph` installed before you run the tests. This script will run the unit and
+integration tests.
+
+```sh
+pub run test --concurrency=1
 ```
