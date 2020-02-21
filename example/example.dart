@@ -61,7 +61,7 @@ void main(List<String> arguments) async {
     await dgraphClient.Alter(clientContext, operation);
 
     // Create another transaction
-    txn = dgraphClient.NewTxn();
+    txn = dgraphClient.NewReadOnlyTxn();
 
     // Run the same query again
     response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
