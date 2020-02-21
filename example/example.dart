@@ -37,7 +37,7 @@ void main(List<String> arguments) async {
     api.Request request = api.Request();
     request.mutations.add(mutation);
     api.Response response = await txn.Mutate(clientContext, request);
-    print("Response: $response");
+    print("Response: ${response.uids}");
 
     // Run a query
     String query = """
@@ -65,6 +65,14 @@ void main(List<String> arguments) async {
 
     // Run the same query again
     response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
+    print(
+        "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+
+    // Run the same query again, but now using txn.Do
+    request = api.Request();
+    request.query = query;
+    request.vars.addAll({"\$a": "Alice"});
+    response = await txn.Do(clientContext, request);
     print(
         "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
 

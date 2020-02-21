@@ -121,6 +121,66 @@ class Txn {
     }
   }
 
+  // Do executes a query followed by one or more than one mutations.
+  Future<api.Response> Do(ClientContext ctx, api.Request req) async {
+    if (finished) {
+      throw ErrFinished;
+    }
+    if (req.mutations.length > 0) {
+      if (readOnly) {
+        throw ErrReadOnly;
+      }
+      mutated = true;
+    }
+
+    ctx = dg.getContext(ctx);
+    req.startTs = context.startTs;
+    api.Response resp;
+
+    var exception;
+    try {
+      resp = await dc.query(ctx, req);
+
+      if (req.commitNow) {
+        finished = true;
+      }
+
+      mergeContext(resp.txn);
+    } catch (e) {
+      if (dg.isJwtExpired(e)) {
+        try {
+          dg.retryLogin(ctx);
+        } catch (e) {
+          throw e;
+        }
+
+        ctx = dg.getContext(ctx);
+        try {
+          resp = await dc.query(ctx, req);
+        } catch (e) {
+          exception = e;
+        }
+      }
+    } finally {
+      if (req.mutations.length > 0) {
+        // Ignore error, user should see the original error.
+        Discard(ctx);
+
+        // If the transaction was aborted, return the right error
+        // so the caller can handle it.
+        if (exception != null) {
+          if (exception.code == StatusCode.aborted) {
+            throw ErrAborted;
+          }
+        }
+      }
+      if (exception != null) {
+        throw exception;
+      }
+    }
+    return resp;
+  }
+
   // Commit commits any mutations that have been made in the transaction. Once
   // Commit has been called, the lifespan of the transaction is complete.
   //
