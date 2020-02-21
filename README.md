@@ -30,7 +30,7 @@ Depending on the version of Dgraph that you are connecting to, you will have to
 use a different version of this client.
 
 | Dgraph version | dgraph client version | 
-|:--------------:|:-----------:|:---------
+|:--------------:|:---------------------:|
 |  dgraph 1.0.X  |  dgraph client 0.6.0  |
 |  dgraph 1.1.X  |  dgraph client 1.1.X  |
 
