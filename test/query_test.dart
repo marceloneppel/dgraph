@@ -118,4 +118,43 @@ main() {
       expect(json.decode(utf8.decode(response.json)), equals({'all': []}));
     });
   });
+
+  group("query using txn.Do -> ", () {
+    test("should check if the database contains an existing data", () async {
+      String query = """
+      query all(\$a: string) {
+        all(func: eq(name, \$a)) {
+          name
+          age
+        }
+      }
+      """;
+      var request = api.Request();
+      request.query = query;
+      request.vars.addAll({"\$a": "Alice"});
+      var response = await txn.Do(clientContext, request);
+      expect(
+          json.decode(utf8.decode(response.json)),
+          equals({
+            'all': [
+              {'name': 'Alice', 'age': 18}
+            ]
+          }));
+    });
+    test("should check if the database contains a non existing data", () async {
+      String query = """
+      query all(\$a: string) {
+        all(func: eq(name, \$a)) {
+          name
+          age
+        }
+      }
+      """;
+      var request = api.Request();
+      request.query = query;
+      request.vars.addAll({"\$a": "Bob"});
+      var response = await txn.Do(clientContext, request);
+      expect(json.decode(utf8.decode(response.json)), equals({'all': []}));
+    });
+  });
 }
