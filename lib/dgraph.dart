@@ -1,11 +1,17 @@
+import 'dart:convert';
+
+import 'package:grpc/grpc.dart';
+import 'package:mutex/mutex.dart';
 import 'package:protobuf/protobuf.dart';
-import 'protos/api/api_pb.dart' as api;
+import 'protos/api/api.pb.dart' as api;
 import 'txn.dart';
 import 'dart:async';
 import 'dart:math';
 
 // Dgraph is a transaction aware client to a set of dgraph server instances.
 class Dgraph {
+  ReadWriteMutex jwtMutex;
+  api.Jwt jwt;
   List<api.DgraphApi> dc;
 
   // NewTxn creates a new transaction.
@@ -25,6 +31,26 @@ class Dgraph {
 
   Dgraph({this.dc});
 
+  // Login logs in the current client using the provided credentials.
+  // Valid for the duration the client is alive.
+  Future<Null> Login(ClientContext ctx, String userid, String password) async {
+    try {
+      jwtMutex.acquireWrite();
+
+      var dc = anyClient();
+      var loginRequest = api.LoginRequest();
+      loginRequest.userid = userid;
+      loginRequest.password = password;
+      var resp = await dc.login(ctx, loginRequest);
+
+      jwt = api.Jwt.fromJson(utf8.decode(resp.json));
+    } catch (e) {
+      throw e;
+    } finally {
+      jwtMutex.release();
+    }
+  }
+
   // By setting various fields of api.Operation, Alter can be used to do the
   // following:
   //
@@ -36,6 +62,43 @@ class Dgraph {
   Future<Null> Alter(ClientContext ctx, api.Operation op) async {
     api.DgraphApi dc = anyClient();
     await dc.alter(ctx, op);
+  }
+
+  Future<Null> retryLogin(ClientContext ctx) async {
+    try {
+      jwtMutex.acquireWrite();
+
+      if (jwt.refreshJwt.length == 0) {
+        throw Exception("refresh jwt should not be empty");
+      }
+
+      var dc = anyClient();
+      var loginRequest = api.LoginRequest();
+      loginRequest.refreshToken = jwt.refreshJwt;
+      var resp = await dc.login(ctx, loginRequest);
+
+      jwt = api.Jwt.fromJson(utf8.decode(resp.json));
+    } catch (e) {
+      throw e;
+    } finally {
+      jwtMutex.release();
+    }
+  }
+
+  ClientContext getContext(ClientContext ctx) {
+    // TODO: implement
+    return ctx;
+  }
+
+  // isJwtExpired returns true if the error indicates that the jwt has expired.
+  bool isJwtExpired(Exception exception) {
+    if (exception == null) {
+      return false;
+    }
+
+    return exception is GrpcError &&
+        (exception as GrpcError).code == StatusCode.unauthenticated &&
+        exception.toString().contains("Token is expired");
   }
 
   api.DgraphApi anyClient() {

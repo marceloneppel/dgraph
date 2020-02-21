@@ -1,7 +1,7 @@
 import 'package:grpc/grpc.dart';
 import 'package:protobuf/protobuf.dart';
 import 'dgraph.dart';
-import 'protos/api/api_pb.dart' as api;
+import 'protos/api/api.pb.dart' as api;
 import 'y/y.dart';
 import 'dart:async';
 
@@ -84,7 +84,7 @@ class Txn {
   //
   // If the mutation fails, then the transaction is discarded and all future
   // operations on it will fail.
-  Future<api.Assigned> Mutate(ClientContext ctx, api.Mutation mu) async {
+  Future<api.Response> Mutate(ClientContext ctx, api.Request req) async {
     if (readOnly) {
       throw ErrReadOnly;
     }
@@ -92,14 +92,14 @@ class Txn {
       throw ErrFinished;
     }
     mutated = true;
-    mu.startTs = context.startTs;
-    api.Assigned ag;
+    req.startTs = context.startTs;
+    api.Response res;
     try {
-      ag = await dc.mutate(ctx, mu);
-      if (mu.commitNow) {
+      res = await dc.query(ctx, req);
+      if (req.commitNow) {
         finished = true;
       }
-      mergeContext(ag.context);
+      mergeContext(res.txn);
     } on GrpcError catch (e) {
       // Since a mutation error occurred, the txn should no longer be used
       // (some mutations could have applied but not others, but we don't know
@@ -117,8 +117,68 @@ class Txn {
         throw ErrAborted;
       }
     } finally {
-      return ag;
+      return res;
     }
+  }
+
+  // Do executes a query followed by one or more than one mutations.
+  Future<api.Response> Do(ClientContext ctx, api.Request req) async {
+    if (finished) {
+      throw ErrFinished;
+    }
+    if (req.mutations.length > 0) {
+      if (readOnly) {
+        throw ErrReadOnly;
+      }
+      mutated = true;
+    }
+
+    ctx = dg.getContext(ctx);
+    req.startTs = context.startTs;
+    api.Response resp;
+
+    var exception;
+    try {
+      resp = await dc.query(ctx, req);
+
+      if (req.commitNow) {
+        finished = true;
+      }
+
+      mergeContext(resp.txn);
+    } catch (e) {
+      if (dg.isJwtExpired(e)) {
+        try {
+          dg.retryLogin(ctx);
+        } catch (e) {
+          throw e;
+        }
+
+        ctx = dg.getContext(ctx);
+        try {
+          resp = await dc.query(ctx, req);
+        } catch (e) {
+          exception = e;
+        }
+      }
+    } finally {
+      if (req.mutations.length > 0) {
+        // Ignore error, user should see the original error.
+        Discard(ctx);
+
+        // If the transaction was aborted, return the right error
+        // so the caller can handle it.
+        if (exception != null) {
+          if (exception.code == StatusCode.aborted) {
+            throw ErrAborted;
+          }
+        }
+      }
+      if (exception != null) {
+        throw exception;
+      }
+    }
+    return resp;
   }
 
   // Commit commits any mutations that have been made in the transaction. Once
@@ -134,14 +194,11 @@ class Txn {
     } else if (finished) {
       throw ErrFinished;
     } else {
-      finished = true;
-      if (mutated) {
-        try {
-          await dc.commitOrAbort(ctx, context);
-        } on GrpcError catch (e) {
-          if (e.code == StatusCode.aborted) {
-            throw ErrAborted;
-          }
+      try {
+        await dc.commitOrAbort(ctx, context);
+      } on GrpcError catch (e) {
+        if (e.code == StatusCode.aborted) {
+          throw ErrAborted;
         }
       }
     }
@@ -157,12 +214,7 @@ class Txn {
   // is unavailable. In these cases, the server will eventually do the
   // transaction clean up.
   Future<Null> Discard(ClientContext ctx) async {
-    if (!finished) {
-      finished = true;
-      if (mutated) {
-        context.aborted = true;
-        await dc.commitOrAbort(ctx, context);
-      }
-    }
+    context.aborted = true;
+    await dc.commitOrAbort(ctx, context);
   }
 }

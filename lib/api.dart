@@ -1,4 +1,4 @@
-import 'package:dgraph/protos/api/api_pb.dart' as api;
+import 'package:dgraph/protos/api/api.pb.dart' as api;
 import 'package:grpc/grpc.dart';
 import 'package:protobuf/protobuf.dart';
 import 'dart:async';
@@ -40,7 +40,7 @@ class DgraphRpcClient extends RpcClient {
             generatedMessage = api.Response.fromBuffer(value);
             break;
           case "Mutate":
-            generatedMessage = api.Assigned.fromBuffer(value);
+            generatedMessage = api.Response.fromBuffer(value);
             break;
           case "Alter":
             generatedMessage = api.Payload.fromBuffer(value);

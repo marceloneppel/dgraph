@@ -1,6 +1,6 @@
 import 'package:dgraph/api.dart';
 import 'package:dgraph/dgraph.dart';
-import 'package:dgraph/protos/api/api_pb.dart' as api;
+import 'package:dgraph/protos/api/api.pb.dart' as api;
 import 'package:dgraph/txn.dart';
 import 'package:grpc/grpc.dart';
 import 'package:protobuf/protobuf.dart';
@@ -22,6 +22,23 @@ void main(List<String> arguments) async {
     """;
     await dgraphClient.Alter(clientContext, operation);
 
+    txn = dgraphClient.NewTxn();
+    String query = """
+    schema(pred: [name]) {
+      type
+      index
+      reverse
+      tokenizer
+      list
+      count
+      upsert
+      lang
+    }
+    """;
+    api.Response response = await txn.Query(clientContext, query);
+    print("Response: ${utf8.decode(response.json)}");
+    txn.Discard(clientContext);
+
     // Create a transaction
     txn = dgraphClient.NewTxn();
 
@@ -34,11 +51,13 @@ void main(List<String> arguments) async {
     List<int> pb = utf8.encode(json.encode(p));
     api.Mutation mutation = api.Mutation();
     mutation.setJson = pb;
-    api.Assigned assigned = await txn.Mutate(clientContext, mutation);
-    print("Assigned: $assigned");
+    api.Request request = api.Request();
+    request.mutations.add(mutation);
+    response = await txn.Mutate(clientContext, request);
+    print("Response: ${response.uids}");
 
     // Run a query
-    String query = """
+    query = """
     query all(\$a: string) {
       all(func: eq(name, \$a)) {
         name
@@ -46,10 +65,8 @@ void main(List<String> arguments) async {
       }
     }
     """;
-    api.Response response =
-        await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
-    print(
-        "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+    response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
+    print("Response: ${utf8.decode(response.json)}");
 
     // Commit a transaction
     await txn.Commit(clientContext);
@@ -60,12 +77,18 @@ void main(List<String> arguments) async {
     await dgraphClient.Alter(clientContext, operation);
 
     // Create another transaction
-    txn = dgraphClient.NewTxn();
+    txn = dgraphClient.NewReadOnlyTxn();
 
     // Run the same query again
     response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
-    print(
-        "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+    print("Response: ${utf8.decode(response.json)}");
+
+    // Run the same query again, but now using txn.Do
+    request = api.Request();
+    request.query = query;
+    request.vars.addAll({"\$a": "Alice"});
+    response = await txn.Do(clientContext, request);
+    print("Response: ${utf8.decode(response.json)}");
 
     // Finish transaction without commit
     await txn.Discard(clientContext);
