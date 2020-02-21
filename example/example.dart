@@ -22,6 +22,23 @@ void main(List<String> arguments) async {
     """;
     await dgraphClient.Alter(clientContext, operation);
 
+    txn = dgraphClient.NewTxn();
+    String query = """
+    schema(pred: [name]) {
+      type
+      index
+      reverse
+      tokenizer
+      list
+      count
+      upsert
+      lang
+    }
+    """;
+    api.Response response = await txn.Query(clientContext, query);
+    print("Response: ${utf8.decode(response.json)}");
+    txn.Discard(clientContext);
+
     // Create a transaction
     txn = dgraphClient.NewTxn();
 
@@ -36,11 +53,11 @@ void main(List<String> arguments) async {
     mutation.setJson = pb;
     api.Request request = api.Request();
     request.mutations.add(mutation);
-    api.Response response = await txn.Mutate(clientContext, request);
+    response = await txn.Mutate(clientContext, request);
     print("Response: ${response.uids}");
 
     // Run a query
-    String query = """
+    query = """
     query all(\$a: string) {
       all(func: eq(name, \$a)) {
         name
@@ -49,8 +66,7 @@ void main(List<String> arguments) async {
     }
     """;
     response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
-    print(
-        "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+    print("Response: ${utf8.decode(response.json)}");
 
     // Commit a transaction
     await txn.Commit(clientContext);
@@ -65,16 +81,14 @@ void main(List<String> arguments) async {
 
     // Run the same query again
     response = await txn.QueryWithVars(clientContext, query, {"\$a": "Alice"});
-    print(
-        "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+    print("Response: ${utf8.decode(response.json)}");
 
     // Run the same query again, but now using txn.Do
     request = api.Request();
     request.query = query;
     request.vars.addAll({"\$a": "Alice"});
     response = await txn.Do(clientContext, request);
-    print(
-        "Response: ${latin1.decode(base64.decode(json.decode(response.writeToJson())['1']))}");
+    print("Response: ${utf8.decode(response.json)}");
 
     // Finish transaction without commit
     await txn.Discard(clientContext);
