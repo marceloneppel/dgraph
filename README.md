@@ -150,8 +150,7 @@ try {
 
 ### Running tests
 
-Make sure you have `dgraph` installed before you run the tests. This script will run the unit and
-integration tests.
+Make sure you have `dgraph` installed before you run the tests. This script will run the unit tests.
 
 ```sh
 pub run test --concurrency=1
