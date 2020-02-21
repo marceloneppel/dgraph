@@ -31,12 +31,12 @@ use a different version of this client.
 
 | Dgraph version | dgraph client version | 
 |:--------------:|:---------------------:|
-|  dgraph 1.0.X  |  dgraph client 0.6.0  |
+|  dgraph 1.0.X  |  dgraph client 0.5.0  |
 |  dgraph 1.1.X  |  dgraph client 1.1.X  |
 
-Note: One of the most important API breakages from dgraph client v0.6.0 to v1.1.X is in
+Note: One of the most important API breakages from dgraph client v0.5.0 to v1.1.X is in
 the function `Txn.Mutate`. This function returns an `api.Assigned`
-value until v0.6.0 but an `api.Response` in v1.1.X.
+value until v0.5.0 but an `api.Response` in v1.1.X.
 
 ## Using a client
 

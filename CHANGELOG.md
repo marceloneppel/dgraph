@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Fixed Dgraph 1.0.x compatible client version on README
+
 ## 1.1.0
 
 * Dgraph 1.1.x support
