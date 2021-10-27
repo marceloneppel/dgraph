@@ -10,9 +10,9 @@ import 'dart:math';
 
 // Dgraph is a transaction aware client to a set of dgraph server instances.
 class Dgraph {
-  ReadWriteMutex jwtMutex;
-  api.Jwt jwt;
-  List<api.DgraphApi> dc;
+  late ReadWriteMutex jwtMutex;
+  late api.Jwt jwt;
+  List<api.DgraphApi?>? dc;
 
   // NewTxn creates a new transaction.
   Txn NewTxn() {
@@ -37,7 +37,7 @@ class Dgraph {
     try {
       jwtMutex.acquireWrite();
 
-      var dc = anyClient();
+      var dc = anyClient()!;
       var loginRequest = api.LoginRequest();
       loginRequest.userid = userid;
       loginRequest.password = password;
@@ -60,7 +60,7 @@ class Dgraph {
   //
   // 3. Drop the database.
   Future<Null> Alter(ClientContext ctx, api.Operation op) async {
-    api.DgraphApi dc = anyClient();
+    api.DgraphApi dc = anyClient()!;
     await dc.alter(ctx, op);
   }
 
@@ -72,7 +72,7 @@ class Dgraph {
         throw Exception("refresh jwt should not be empty");
       }
 
-      var dc = anyClient();
+      var dc = anyClient()!;
       var loginRequest = api.LoginRequest();
       loginRequest.refreshToken = jwt.refreshJwt;
       var resp = await dc.login(ctx, loginRequest);
@@ -101,8 +101,8 @@ class Dgraph {
         exception.toString().contains("Token is expired");
   }
 
-  api.DgraphApi anyClient() {
-    return dc[Random().nextInt(dc.length)];
+  api.DgraphApi? anyClient() {
+    return dc![Random().nextInt(dc!.length)];
   }
 
   // DeleteEdges sets the edges corresponding to predicates on the node with the given uid
@@ -132,18 +132,18 @@ class DeleteEdges {
     if (args.length < 3) {
       super.noSuchMethod(invocation);
     }
-    api.Mutation mu = args[0];
-    String uid = args[1];
-    List<String> predicates = args.sublist(2, args.length - 1);
+    api.Mutation? mu = args[0];
+    String? uid = args[1];
+    List<String?> predicates = args.sublist(2, args.length - 1) as List<String?>;
     predicates.forEach((predicate) {
       api.NQuad nQuad = api.NQuad();
-      nQuad.subject = uid;
-      nQuad.predicate = predicate;
+      nQuad.subject = uid!;
+      nQuad.predicate = predicate!;
       api.Value value = api.Value();
       // _STAR_ALL is defined as x.Star in x package.
       value.defaultVal = "_STAR_ALL";
       nQuad.objectValue = value;
-      mu.del.add(nQuad);
+      mu!.del.add(nQuad);
     });
   }
 }
@@ -164,7 +164,7 @@ class NewDgraphClientFunction {
   @override
   dynamic noSuchMethod(Invocation invocation) {
     return Dgraph(
-      dc: invocation.positionalArguments,
+      dc: invocation.positionalArguments as List<api.DgraphApi?>?,
     );
   }
 }

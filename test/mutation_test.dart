@@ -10,16 +10,16 @@ import 'package:protobuf/protobuf.dart';
 
 main() {
   DgraphRpcClient rpcClient;
-  Dgraph dgraphClient;
+  Dgraph? dgraphClient;
   Txn txn;
-  ClientContext clientContext;
+  late ClientContext clientContext;
 
   _setUpData() async {
     api.Operation operation = api.Operation();
     operation.schema = """
     name: string @index(exact) .
     """;
-    await dgraphClient.Alter(clientContext, operation);
+    await dgraphClient!.Alter(clientContext, operation);
   }
 
   setUp(() async {
@@ -33,7 +33,7 @@ main() {
   tearDown(() async {
     var operation = api.Operation();
     operation.dropAll = true;
-    await dgraphClient.Alter(clientContext, operation);
+    await dgraphClient!.Alter(clientContext, operation);
   });
 
   group("mutation -> ", () {
@@ -48,8 +48,9 @@ main() {
       mutation.setJson = pb;
       api.Request request = api.Request();
       request.mutations.add(mutation);
-      txn = dgraphClient.NewTxn();
-      var response = await txn.Mutate(clientContext, request);
+      txn = dgraphClient!.NewTxn();
+      var response =
+          await (txn.Mutate(clientContext, request) as Future<api.Response>);
       expect(response.uids.keys, equals(['alice']));
       expect(response.uids.values.length, 1);
       expect(response.uids.values.join(','), startsWith('0x'));

@@ -12,7 +12,7 @@ void main(List<String> arguments) async {
       DgraphRpcClient("localhost", 9080, const ChannelCredentials.insecure());
   Dgraph dgraphClient = dgraph.NewDgraphClient(api.DgraphApi(rpcClient));
 
-  Txn txn;
+  Txn? txn;
   ClientContext clientContext = ClientContext();
   try {
     // Alter the database
@@ -53,7 +53,8 @@ void main(List<String> arguments) async {
     mutation.setJson = pb;
     api.Request request = api.Request();
     request.mutations.add(mutation);
-    response = await txn.Mutate(clientContext, request);
+    response =
+        await (txn.Mutate(clientContext, request) as Future<api.Response>);
     print("Response: ${response.uids}");
 
     // Run a query
@@ -87,7 +88,7 @@ void main(List<String> arguments) async {
     request = api.Request();
     request.query = query;
     request.vars.addAll({"\$a": "Alice"});
-    response = await txn.Do(clientContext, request);
+    response = await (txn.Do(clientContext, request) as Future<api.Response>);
     print("Response: ${utf8.decode(response.json)}");
 
     // Finish transaction without commit

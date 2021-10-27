@@ -12,7 +12,7 @@ class DgraphRpcClient extends RpcClient {
 
   @override
   Future<T> invoke<T extends GeneratedMessage>(
-      ClientContext ctx,
+      ClientContext? ctx,
       String serviceName,
       String methodName,
       GeneratedMessage request,
@@ -24,7 +24,7 @@ class DgraphRpcClient extends RpcClient {
         credentials: channelCredentials,
       ),
     );
-    ClientMethod<GeneratedMessage, GeneratedMessage> clientMethod =
+    ClientMethod<GeneratedMessage, GeneratedMessage?> clientMethod =
         ClientMethod(
       '/api.Dgraph/$methodName',
       (GeneratedMessage value) {
@@ -34,7 +34,7 @@ class DgraphRpcClient extends RpcClient {
         return list;
       },
       (List<int> value) {
-        GeneratedMessage generatedMessage;
+        GeneratedMessage? generatedMessage;
         switch (methodName) {
           case "Query":
             generatedMessage = api.Response.fromBuffer(value);
@@ -59,9 +59,9 @@ class DgraphRpcClient extends RpcClient {
         StreamController<GeneratedMessage>();
     streamController.sink.add(request);
     CallOptions callOptions = CallOptions(timeout: Duration(seconds: 3));
-    ClientCall<GeneratedMessage, GeneratedMessage> clientCall =
+    ClientCall<GeneratedMessage, GeneratedMessage?> clientCall =
         channel.createCall(clientMethod, streamController.stream, callOptions);
-    GeneratedMessage response = await clientCall.response.first;
+    GeneratedMessage? response = await clientCall.response.first;
     emptyResponse = response as T;
     return emptyResponse;
   }

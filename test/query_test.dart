@@ -10,16 +10,16 @@ import 'package:protobuf/protobuf.dart';
 
 main() {
   DgraphRpcClient rpcClient;
-  Dgraph dgraphClient;
-  Txn txn;
-  ClientContext clientContext;
+  Dgraph? dgraphClient;
+  late Txn txn;
+  late ClientContext clientContext;
 
   _setUpData() async {
     api.Operation operation = api.Operation();
     operation.schema = """
     name: string @index(exact) .
     """;
-    await dgraphClient.Alter(clientContext, operation);
+    await dgraphClient!.Alter(clientContext, operation);
 
     Map<String, dynamic> p = {
       "uid": "_:alice",
@@ -31,7 +31,7 @@ main() {
     mutation.setJson = pb;
     api.Request request = api.Request();
     request.mutations.add(mutation);
-    txn = dgraphClient.NewTxn();
+    txn = dgraphClient!.NewTxn();
     await txn.Mutate(clientContext, request);
     await txn.Commit(clientContext);
   }
@@ -42,13 +42,13 @@ main() {
     dgraphClient = dgraph.NewDgraphClient(api.DgraphApi(rpcClient));
     clientContext = ClientContext();
     await _setUpData();
-    txn = dgraphClient.NewTxn();
+    txn = dgraphClient!.NewTxn();
   });
 
   tearDown(() async {
     var operation = api.Operation();
     operation.dropAll = true;
-    await dgraphClient.Alter(clientContext, operation);
+    await dgraphClient!.Alter(clientContext, operation);
   });
 
   group("query -> ", () {
@@ -132,7 +132,8 @@ main() {
       var request = api.Request();
       request.query = query;
       request.vars.addAll({"\$a": "Alice"});
-      var response = await txn.Do(clientContext, request);
+      var response =
+          await (txn.Do(clientContext, request) as Future<api.Response>);
       expect(
           json.decode(utf8.decode(response.json)),
           equals({
@@ -153,7 +154,8 @@ main() {
       var request = api.Request();
       request.query = query;
       request.vars.addAll({"\$a": "Bob"});
-      var response = await txn.Do(clientContext, request);
+      var response =
+          await (txn.Do(clientContext, request) as Future<api.Response>);
       expect(json.decode(utf8.decode(response.json)), equals({'all': []}));
     });
   });

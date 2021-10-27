@@ -10,22 +10,22 @@ import 'package:protobuf/protobuf.dart';
 
 main() {
   DgraphRpcClient rpcClient;
-  Dgraph dgraphClient;
-  Txn txn;
-  ClientContext clientContext;
+  Dgraph? dgraphClient;
+  late Txn txn;
+  late ClientContext clientContext;
 
   setUp(() async {
     rpcClient =
         DgraphRpcClient("localhost", 9080, const ChannelCredentials.insecure());
     dgraphClient = dgraph.NewDgraphClient(api.DgraphApi(rpcClient));
-    txn = dgraphClient.NewTxn();
+    txn = dgraphClient!.NewTxn();
     clientContext = ClientContext();
   });
 
   tearDown(() async {
     var operation = api.Operation();
     operation.dropAll = true;
-    await dgraphClient.Alter(clientContext, operation);
+    await dgraphClient!.Alter(clientContext, operation);
   });
 
   group("dropAll -> ", () {
@@ -35,12 +35,12 @@ main() {
       name: string @index(exact) .
       nickname: string @index(exact) .
       """;
-      await dgraphClient.Alter(clientContext, operation);
+      await dgraphClient!.Alter(clientContext, operation);
 
       operation = api.Operation();
       operation = api.Operation();
       operation.dropAll = true;
-      await dgraphClient.Alter(clientContext, operation);
+      await dgraphClient!.Alter(clientContext, operation);
 
       String query = """
       schema(pred: [name,nickname]) {
@@ -66,12 +66,12 @@ main() {
       name: string @index(exact) .
       nickname: string @index(exact) .
       """;
-      await dgraphClient.Alter(clientContext, operation);
+      await dgraphClient!.Alter(clientContext, operation);
 
       operation = api.Operation();
       operation = api.Operation();
       operation.dropAttr = "name";
-      await dgraphClient.Alter(clientContext, operation);
+      await dgraphClient!.Alter(clientContext, operation);
 
       String query = """
       schema(pred: [name,nickname]) {
@@ -107,7 +107,7 @@ main() {
       operation.schema = """
       name: string @index(exact) .
       """;
-      await dgraphClient.Alter(clientContext, operation);
+      await dgraphClient!.Alter(clientContext, operation);
 
       String query = """
       schema(pred: [name]) {
