@@ -1,5 +1,7 @@
 name: dgraph
 version: 1.1.2
+description: >-
+  Dgraph dart client.
 environment:
   sdk: '>=2.12.0 <3.0.0'
 dependencies:
