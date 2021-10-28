@@ -1,3 +1,7 @@
+## 1.1.2
+
+* Migrate to dart sound null safety (thanks to [modeckrus](https://github.com/modeckrus)).
+
 ## 1.1.1
 
 * Fixed Dgraph 1.0.x compatible client version on README
