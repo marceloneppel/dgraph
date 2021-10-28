@@ -18,14 +18,14 @@ import 'dart:async';
 // is a no-op if Commit has already been called, so it's safe to defer a call
 // to Discard immediately after NewTxn.
 class Txn {
-  api.TxnContext context;
+  api.TxnContext? context;
 
   bool finished = false;
   bool mutated = false;
   bool readOnly = false;
 
-  Dgraph dg;
-  api.DgraphApi dc;
+  Dgraph? dg;
+  api.DgraphApi? dc;
 
   static const ErrFinished =
       "Transaction has already been committed or discarded";
@@ -44,7 +44,7 @@ class Txn {
   // QueryWithVars is like Query, but allows a variable map to be used. This can
   // provide safety against injection attacks.
   Future<api.Response> QueryWithVars(
-      ClientContext ctx, String q, Map<String, String> vars) async {
+      ClientContext ctx, String q, Map<String, String>? vars) async {
     if (finished) {
       throw ErrFinished;
     }
@@ -53,24 +53,24 @@ class Txn {
     if (vars != null) {
       req.vars.addAll(vars);
     }
-    req.startTs = context.startTs;
+    req.startTs = context!.startTs;
     req.readOnly = readOnly;
     api.Response resp;
-    resp = await dc.query(ctx, req);
+    resp = await dc!.query(ctx, req);
     mergeContext(resp.txn);
     return resp;
   }
 
   void mergeContext(api.TxnContext src) {
     if (src != null) {
-      if (context.startTs == 0) {
-        context.startTs = src.startTs;
+      if (context!.startTs == 0) {
+        context!.startTs = src.startTs;
       }
-      if (context.startTs != src.startTs) {
+      if (context!.startTs != src.startTs) {
         throw Exception("StartTs mismatch");
       }
-      context.keys.addAll(src.keys);
-      context.preds.addAll(src.preds);
+      context!.keys.addAll(src.keys);
+      context!.preds.addAll(src.preds);
     }
   }
 
@@ -92,10 +92,10 @@ class Txn {
       throw ErrFinished;
     }
     mutated = true;
-    req.startTs = context.startTs;
-    api.Response res;
+    req.startTs = context!.startTs;
+    api.Response? res;
     try {
-      res = await dc.query(ctx, req);
+      res = await dc!.query(ctx, req);
       if (req.commitNow) {
         finished = true;
       }
@@ -117,6 +117,7 @@ class Txn {
         throw ErrAborted;
       }
     } finally {
+      res ??= api.Response();
       return res;
     }
   }
@@ -133,13 +134,13 @@ class Txn {
       mutated = true;
     }
 
-    ctx = dg.getContext(ctx);
-    req.startTs = context.startTs;
-    api.Response resp;
+    ctx = dg!.getContext(ctx);
+    req.startTs = context!.startTs;
+    api.Response? resp;
 
     var exception;
     try {
-      resp = await dc.query(ctx, req);
+      resp = await dc!.query(ctx, req);
 
       if (req.commitNow) {
         finished = true;
@@ -147,16 +148,16 @@ class Txn {
 
       mergeContext(resp.txn);
     } catch (e) {
-      if (dg.isJwtExpired(e)) {
+      if (e is Exception) if (dg!.isJwtExpired(e)) {
         try {
-          dg.retryLogin(ctx);
+          dg!.retryLogin(ctx);
         } catch (e) {
           throw e;
         }
 
-        ctx = dg.getContext(ctx);
+        ctx = dg!.getContext(ctx);
         try {
-          resp = await dc.query(ctx, req);
+          resp = await dc!.query(ctx, req);
         } catch (e) {
           exception = e;
         }
@@ -178,6 +179,7 @@ class Txn {
         throw exception;
       }
     }
+    resp ??= api.Response();
     return resp;
   }
 
@@ -195,7 +197,7 @@ class Txn {
       throw ErrFinished;
     } else {
       try {
-        await dc.commitOrAbort(ctx, context);
+        await dc!.commitOrAbort(ctx, context!);
       } on GrpcError catch (e) {
         if (e.code == StatusCode.aborted) {
           throw ErrAborted;
@@ -214,7 +216,7 @@ class Txn {
   // is unavailable. In these cases, the server will eventually do the
   // transaction clean up.
   Future<Null> Discard(ClientContext ctx) async {
-    context.aborted = true;
-    await dc.commitOrAbort(ctx, context);
+    context!.aborted = true;
+    await dc!.commitOrAbort(ctx, context!);
   }
 }

@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: api.proto
 //
-// @dart = 2.3
+
 // ignore_for_file: camel_case_types,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type
 
 import 'dart:async' as $async;
@@ -46,15 +46,15 @@ abstract class DgraphServiceBase extends $pb.GeneratedService {
       $core.String method, $pb.GeneratedMessage request) {
     switch (method) {
       case 'Login':
-        return this.login(ctx, request);
+        return this.login(ctx, request as $0.LoginRequest);
       case 'Query':
-        return this.query(ctx, request);
+        return this.query(ctx, request as $0.Request);
       case 'Alter':
-        return this.alter(ctx, request);
+        return this.alter(ctx, request as $0.Operation);
       case 'CommitOrAbort':
-        return this.commitOrAbort(ctx, request);
+        return this.commitOrAbort(ctx, request as $0.TxnContext);
       case 'CheckVersion':
-        return this.checkVersion(ctx, request);
+        return this.checkVersion(ctx, request as $0.Check);
       default:
         throw $core.ArgumentError('Unknown method: $method');
     }
